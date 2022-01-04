@@ -62,7 +62,7 @@ class TrainOREvaluate(object):
     plt.ylabel("Loss")
     plt.title("Training loss plot")
     plt.savefig("reports/figures/Training_loss_evolution.png", dpi=300)
-    torch.save(model.state_dict(), "models/model.pt")
+    torch.save(model, "models/ConvolutionModel_v1_lr0.003_e30_bs64.pth")
 
 
 if __name__ == "__main__":

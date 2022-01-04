@@ -4,7 +4,6 @@ import sys
 import torch
 from torch import nn
 
-from src.models.model import MyAwesomeModel
 
 
 class Predict(object):
@@ -16,12 +15,10 @@ class Predict(object):
     args = parser.parse_args(sys.argv[1:])
     print(args)
 
-    model = MyAwesomeModel()
     test_set = torch.load("data/processed/test_processed.pt")
     test_set = torch.utils.data.DataLoader(test_set, batch_size=64, shuffle=True)
 
-    state_dict = torch.load("models/model.pt")
-    model.load_state_dict(state_dict)
+    model = torch.load("models/ConvolutionModel_v1_lr0.003_e30_bs64.pth")
 
     criterion = nn.NLLLoss()
 
