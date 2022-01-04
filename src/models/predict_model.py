@@ -5,7 +5,6 @@ import torch
 from torch import nn
 
 
-
 class Predict(object):
 
     print("Evaluating until hitting the ceiling")
