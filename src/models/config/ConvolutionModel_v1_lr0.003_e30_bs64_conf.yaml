@@ -1,0 +1,15 @@
+#ConvolutionModel_conf.yaml
+hyperparameters:
+  dropout_p: 0.2
+  in_1: 1
+  in_2: 4
+  in_3: 8
+  out_1: 4
+  out_2: 8
+  out_3: 16
+  kernel_size: 3
+  stride: 1
+  padding: 1
+  lin_out_1: 128
+  lin_out_2: 64
+  out_digits: 10

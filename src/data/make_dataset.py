@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+import glob
 import logging
 from pathlib import Path
 
-import glob
 import click
 import numpy as np
 import torch
@@ -21,7 +21,7 @@ def main(input_filepath, output_filepath):
 
     raw_data_path = "data/raw/"
 
-    files = glob.glob(raw_data_path+'*.npz')
+    files = glob.glob(raw_data_path + "*.npz")
 
     # Dictionaries
     test = {"images": [], "labels": []}
@@ -29,7 +29,7 @@ def main(input_filepath, output_filepath):
 
     # Load images and labels
     for file in files:
-        if 'train' in file:
+        if "train" in file:
             with np.load(file) as f:
                 train["images"].append(f["images"])
                 train["labels"].append(f["labels"])
@@ -62,11 +62,10 @@ def main(input_filepath, output_filepath):
 
     # Save file
     save_path = "data/processed/"
-    
-    print('Training set image dict dimensions: ', np.shape(train['images']))
-    print('Test set image dict dimensions: ', np.shape(test['images']))
 
-    
+    print("Training set image dict dimensions: ", np.shape(train["images"]))
+    print("Test set image dict dimensions: ", np.shape(test["images"]))
+
     torch.save(train_set, save_path + "train_processed.pt")
     torch.save(test_set, save_path + "test_processed.pt")
 

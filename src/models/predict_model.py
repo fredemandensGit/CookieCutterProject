@@ -9,10 +9,10 @@ class Predict(object):
 
     print("Evaluating until hitting the ceiling")
     parser = argparse.ArgumentParser(description="Training arguments")
-    parser.add_argument("load_model_from", default="")
+    # parser.add_argument("load_model_from", default="")
     # add any additional argument that you want
-    args = parser.parse_args(sys.argv[1:])
-    print(args)
+    # args = parser.parse_args(sys.argv[1:])
+    # print(args)
 
     test_set = torch.load("data/processed/test_processed.pt")
     test_set = torch.utils.data.DataLoader(test_set, batch_size=64, shuffle=True)
