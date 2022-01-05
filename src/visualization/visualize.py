@@ -1,33 +1,28 @@
 import argparse
+import os
+import re
 import sys
+from collections import Counter
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+# Graphics
+import seaborn as sns
 import torch
-from torchsummary import summary
-import os
-from collections import Counter
-
-
 from sklearn.manifold import TSNE
-
-import re
 from torch import nn
+from torchsummary import summary
 
 from src.models.model import MyAwesomeModel
 
-
-# Graphics
-import seaborn as sns
-
 sns.set_style("whitegrid")
 sns.set_theme()
-from matplotlib import cm
-
 # Debuging
 import pdb
+
+from matplotlib import cm
 
 
 class Visualizer(object):
@@ -38,9 +33,7 @@ class Visualizer(object):
     # Arguments to be called
     parser = argparse.ArgumentParser(description="Training arguments")
     parser.add_argument("--load_model_from", default="models/")
-    parser.add_argument(
-        "--modelName", default="ConvolutionModel_v1_lr0.003_e30_bs64.pth"
-    )
+    parser.add_argument("--modelName", default="ConvolutionModel_v1_lr0.003_e30_bs64.pth")
 
     # Save arguments in args
     args = parser.parse_args(sys.argv[1:])
@@ -62,17 +55,13 @@ class Visualizer(object):
 
     # Load data
     Train = torch.load("data/processed/train_processed.pt")
-    train_set = torch.utils.data.DataLoader(
-        Train, batch_size=Train.__len__(), shuffle=True
-    )
+    train_set = torch.utils.data.DataLoader(Train, batch_size=Train.__len__(), shuffle=True)
 
     ###################################################
     ############# Plot histogram of data ##############
     ###################################################
     _, labels = Train[:]
-    plt.hist(
-        labels.numpy(), bins=np.arange(11) - 0.5, edgecolor="red", facecolor="black"
-    )
+    plt.hist(labels.numpy(), bins=np.arange(11) - 0.5, edgecolor="red", facecolor="black")
     plt.xticks(ticks=np.arange(0, 10), labels=np.arange(0, 10))
     plt.xlabel("Number in MNIST image")
     plt.ylabel("Number of occurences")
@@ -133,20 +122,14 @@ class Visualizer(object):
             for i in range(10):
                 # Get activations of i'th number
                 activ = active[name][index0to9[i]]
-                activ = (activ - torch.min(activ)) / (
-                    torch.max(activ) - torch.min(activ)
-                )
+                activ = (activ - torch.min(activ)) / (torch.max(activ) - torch.min(activ))
 
                 # Define grid of plots
-                f, axarr = plt.subplots(
-                    nrows=num_rows, ncols=4, figsize=(4 * 3, num_rows * 3)
-                )
+                f, axarr = plt.subplots(nrows=num_rows, ncols=4, figsize=(4 * 3, num_rows * 3))
                 if num_rows > 1:
                     for j in range(num_filters):
                         axarr[int(np.floor(j / 4))][j % 4].imshow(activ[j])
-                        axarr[int(np.floor(j / 4))][j % 4].set_title(
-                            "Layer number: " + str(j)
-                        )
+                        axarr[int(np.floor(j / 4))][j % 4].set_title("Layer number: " + str(j))
                 else:
                     for j in range(num_filters):
                         axarr[j].imshow(activ[j])
