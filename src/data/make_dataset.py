@@ -2,6 +2,7 @@
 import logging
 from pathlib import Path
 
+import glob
 import click
 import numpy as np
 import torch
@@ -20,20 +21,22 @@ def main(input_filepath, output_filepath):
 
     raw_data_path = "data/raw/"
 
+    files = glob.glob(raw_data_path+'*.npz')
+
     # Dictionaries
     test = {"images": [], "labels": []}
     train = {"images": [], "labels": []}
 
     # Load images and labels
-    for i in range(0, 5):
-        file = "train_" + str(i) + ".npz"
-        with np.load(raw_data_path + file) as f:
-            train["images"].append(f["images"])
-            train["labels"].append(f["labels"])
-
-    with np.load(raw_data_path + "test.npz") as f:
-        test["images"].append(f["images"])
-        test["labels"].append(f["labels"])
+    for file in files:
+        if 'train' in file:
+            with np.load(file) as f:
+                train["images"].append(f["images"])
+                train["labels"].append(f["labels"])
+        else:
+            with np.load(file) as f:
+                test["images"].append(f["images"])
+                test["labels"].append(f["labels"])
 
     # convert to appropiate dimensions
     ims = np.array(train["images"])
@@ -47,21 +50,25 @@ def main(input_filepath, output_filepath):
     test["labels"] = np.array(test["labels"]).flatten()
 
     # Convert to data loader by using tensor datasets
-    train = torch.utils.data.TensorDataset(
+    train_set = torch.utils.data.TensorDataset(
         torch.Tensor(train["images"]), torch.LongTensor(train["labels"])
     )
-    # train = torch.utils.data.DataLoader(train, batch_size=64, shuffle=True)
+    # train = torch.utils.data.DataLoader(train_set, batch_size=64, shuffle=True)
 
-    test = torch.utils.data.TensorDataset(
+    test_set = torch.utils.data.TensorDataset(
         torch.Tensor(test["images"]), torch.LongTensor(test["labels"])
     )
     # test = torch.utils.data.DataLoader(test, batch_size=64, shuffle=True)
 
     # Save file
     save_path = "data/processed/"
+    
+    print('Training set image dict dimensions: ', np.shape(train['images']))
+    print('Test set image dict dimensions: ', np.shape(test['images']))
 
-    torch.save(train, save_path + "train_processed.pt")
-    torch.save(test, save_path + "test_processed.pt")
+    
+    torch.save(train_set, save_path + "train_processed.pt")
+    torch.save(test_set, save_path + "test_processed.pt")
 
 
 if __name__ == "__main__":
