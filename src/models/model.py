@@ -6,15 +6,9 @@ class MyAwesomeModel(nn.Module):
         super().__init__()
 
         # Convolutional layers -
-        self.conv1 = nn.Conv2d(
-            in_channels=1, out_channels=4, kernel_size=3, stride=1, padding=1
-        )
-        self.conv2 = nn.Conv2d(
-            in_channels=4, out_channels=8, kernel_size=3, stride=1, padding=1
-        )
-        self.conv3 = nn.Conv2d(
-            in_channels=8, out_channels=16, kernel_size=3, stride=1, padding=1
-        )
+        self.conv1 = nn.Conv2d(in_channels=1, out_channels=4, kernel_size=3, stride=1, padding=1)
+        self.conv2 = nn.Conv2d(in_channels=4, out_channels=8, kernel_size=3, stride=1, padding=1)
+        self.conv3 = nn.Conv2d(in_channels=8, out_channels=16, kernel_size=3, stride=1, padding=1)
 
         # Output - one for each digit
         self.fc1 = nn.Linear(16 * 3 * 3, 128)

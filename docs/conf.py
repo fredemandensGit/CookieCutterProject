@@ -41,7 +41,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"s2_cookiecutter_project"
+project = "s2_cookiecutter_project"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -184,8 +184,8 @@ latex_documents = [
     (
         "index",
         "s2_cookiecutter_exercise.tex",
-        u"s2_cookiecutter_project Documentation",
-        u"Frederik Hartmann",
+        "s2_cookiecutter_project Documentation",
+        "Frederik Hartmann",
         "manual",
     ),
 ]
@@ -219,8 +219,8 @@ man_pages = [
     (
         "index",
         "s2_cookiecutter_exercise",
-        u"s2_cookiecutter_project Documentation",
-        [u"Frederik Hartmann"],
+        "s2_cookiecutter_project Documentation",
+        ["Frederik Hartmann"],
         1,
     )
 ]
@@ -238,8 +238,8 @@ texinfo_documents = [
     (
         "index",
         "s2_cookiecutter_exercise",
-        u"s2_cookiecutter_project Documentation",
-        u"Frederik Hartmann",
+        "s2_cookiecutter_project Documentation",
+        "Frederik Hartmann",
         "s2_cookiecutter_project",
         "Cookiecutter exercises from session 2",
         "Miscellaneous",
