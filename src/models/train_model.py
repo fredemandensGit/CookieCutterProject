@@ -1,24 +1,62 @@
 import argparse
-import logging
-import os
-import pdb
+import re
 import sys
 
-import hydra
+# Graphics
 import matplotlib.pyplot as plt
-import numpy as np
+import seaborn as sns
 import torch
-from model import MyAwesomeModel
-from omegaconf import DictConfig, OmegaConf
 from torch import nn, optim
 
+import os
+import pdb
+from model import MyAwesomeModel, CNNModuleVar
+sns.set_style("whitegrid")
 
-@hydra.main(config_path="config", config_name="train_conf.yaml")
-def main(cfg):
-    log = logging.getLogger(__name__)
+import hydra
+from hydra import compose, initialize
+from omegaconf import OmegaConf,DictConfig
 
+
+import logging
+log = logging.getLogger(__name__)
+
+def build_model():
+    initialize(config_path="config", job_name="model")
+    cfg = compose(config_name="model.yaml")
     log.info(f"configuration: \n {OmegaConf.to_yaml(cfg)}")
-    print(cfg)
+    configs = cfg['hyperparameters']
+
+    ###################################################
+    ################# Hyperparameters #################
+    ###################################################
+    input_channel = configs['input_channel']
+    conv_to_linear_dim = configs['conv_to_linear_dim']
+    output_dim = configs['output_dim']
+    hidden_channel_array = configs['hidden_channel_array']
+    hidden_kernel_array = configs['hidden_kernel_array']
+    hidden_stride_array = configs['hidden_stride_array']
+    hidden_padding_array = configs['hidden_padding_array']
+    hidden_dim_array = configs['hidden_dim_array']
+    non_linear_function_array = configs['non_linear_function_array']
+    regularization_array = configs['regularization_array']
+
+    # Define models, loss-function and optimizer
+    model = CNNModuleVar(input_channel, conv_to_linear_dim,
+                        output_dim,hidden_channel_array,
+                        hidden_kernel_array,hidden_stride_array,
+                        hidden_padding_array,hidden_dim_array,
+                        non_linear_function_array,regularization_array)
+
+    return model
+
+def train():
+    # Get model struct
+    model = build_model()
+
+    cfg = compose(config_name="train_conf.yaml")
+    log.info(f"configuration: \n {OmegaConf.to_yaml(cfg)}")
+
     hparams = cfg.hyperparameters
 
     # set seed
@@ -78,9 +116,9 @@ def main(cfg):
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.title("Training loss plot")
-    plt.savefig("reports/figures/Training_loss_evolution.png", dpi=300)
-    torch.save(model, "models/ConvolutionModel_v1_lr0.003_e30_bs64.pth")
+    plt.savefig("reports/figures/Training_loss_evolution_config.png", dpi=300)
+    torch.save(model, "models/ConvolutionModel_v1_lr0.003_e30_bs64_config.pth")
 
 
 if __name__ == "__main__":
-    main()
+    train()

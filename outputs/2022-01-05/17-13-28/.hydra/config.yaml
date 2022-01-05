@@ -1,7 +1,0 @@
-hyperparameters:
-  batch_size: 64
-  lr: 0.001
-  lr_optim: 0.003
-  epochs: 20
-  seed: 123
-  data_path: /Users/frederikhartmann/Desktop/3. Semester/Januar MLOPS/s2_cookiecutter_exercise/data/processed
