@@ -1,37 +1,50 @@
 import argparse
+import logging
+import os
 import pdb
 import sys
 
+import hydra
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from model import MyAwesomeModel
+from omegaconf import DictConfig, OmegaConf
 from torch import nn, optim
 
-from src.models.model import MyAwesomeModel
 
+@hydra.main(config_path="config", config_name="train_conf.yaml")
+def main(cfg):
+    log = logging.getLogger(__name__)
 
-class TrainOREvaluate(object):
+    log.info(f"configuration: \n {OmegaConf.to_yaml(cfg)}")
+    print(cfg)
+    hparams = cfg.hyperparameters
 
-    print("Training day and night")
+    # set seed
+    torch.manual_seed(hparams["seed"])
+
+    log.info("Training day and night")
     parser = argparse.ArgumentParser(description="Training arguments")
-    parser.add_argument("--lr", default=0.1)
+    parser.add_argument("--lr", default=hparams["lr"])
     # add any additional argument that you want
     args = parser.parse_args(sys.argv[1:])
-    print(args)
+    log.info(args)
 
     # TODO: Implement training loop here
     model = MyAwesomeModel()
-    model.train()
-    train_set = torch.load("data/processed/train_processed.pt")
-    train_set = torch.utils.data.DataLoader(train_set, batch_size=64, shuffle=True)
+    train_set = torch.load(hparams["data_path"] + "/train_processed.pt")
+    train_set = torch.utils.data.DataLoader(
+        train_set, batch_size=hparams["batch_size"], shuffle=True
+    )
 
     criterion = nn.NLLLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.003)
+    optimizer = optim.Adam(model.parameters(), lr=hparams["lr_optim"])
 
-    epochs = 30
-    steps = 0
+    epochs = hparams["epochs"]
 
     train_losses, test_losses = [], []
+    model.train()
     for e in range(epochs):
         running_loss = 0
 
@@ -51,12 +64,16 @@ class TrainOREvaluate(object):
 
             running_loss += loss.item()
 
-        print(
+        log.info(
             "Epoch: {}/{}.. ".format(e + 1, epochs),
             "Training Loss: {:.3f}.. ".format(running_loss / len(train_set)),
         )
         train_losses.append(running_loss / len(train_set))
 
+    os.makedirs("reports/figures/", exist_ok=True)
+    os.makedirs("models/", exist_ok=True)
+
+    torch.save(model.state_dict(), "models/trained_model.pt")
     plt.plot(train_losses)
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
@@ -66,4 +83,4 @@ class TrainOREvaluate(object):
 
 
 if __name__ == "__main__":
-    TrainOREvaluate()
+    main()
