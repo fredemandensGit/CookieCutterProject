@@ -37,6 +37,7 @@ class Predict(object):
             equals = top_class == labels.view(*top_class.shape)
 
             accuracy.append(sum(equals) / len(equals))
+            
             print(f"Validation loss: {loss_valid.item()}")
 
     print(f"Mean accuracy: {torch.mean(sum(accuracy)/len(accuracy))*100}%")

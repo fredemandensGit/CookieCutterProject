@@ -1,0 +1,25 @@
+{
+    "os": "macOS-10.16-x86_64-i386-64bit",
+    "python": "3.9.7",
+    "heartbeatAt": "2022-01-06T13:41:21.691487",
+    "startedAt": "2022-01-06T13:41:20.789286",
+    "docker": null,
+    "cpu_count": 8,
+    "cuda": null,
+    "args": [
+        "lr=0.041833334616338015",
+        "optimizer=sgd"
+    ],
+    "state": "running",
+    "program": "/Users/frederikhartmann/Desktop/3. Semester/Januar MLOPS/s2_cookiecutter_exercise/src/models/train_model.py",
+    "codePath": "src/models/train_model.py",
+    "git": {
+        "remote": "https://github.com/fredemandensGit/CookieCutterProject.git",
+        "commit": "5c92e7b13d384115a030519e497ed9dcd945e14e"
+    },
+    "email": "frederik_hartmann@hotmail.com",
+    "root": "/Users/frederikhartmann/Desktop/3. Semester/Januar MLOPS/s2_cookiecutter_exercise",
+    "host": "airtilhfrederik.students.clients.local",
+    "username": "frederikhartmann",
+    "executable": "/Users/frederikhartmann/opt/anaconda3/envs/py39/bin/python"
+}
