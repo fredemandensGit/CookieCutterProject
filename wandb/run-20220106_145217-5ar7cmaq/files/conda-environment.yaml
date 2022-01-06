@@ -1,4 +1,0 @@
-name: py39
-channels:
-  - defaults
-prefix: /Users/frederikhartmann/opt/anaconda3/envs/py39/envs/py39

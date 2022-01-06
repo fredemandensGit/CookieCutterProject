@@ -1,6 +1,0 @@
-wandb_version: 1
-
-lr:
-  value: 0.010581872773009615
-optimizer:
-  value: sgd
