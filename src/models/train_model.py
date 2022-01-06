@@ -16,15 +16,21 @@ sns.set_style("whitegrid")
 import hydra
 from hydra import compose, initialize
 from omegaconf import OmegaConf,DictConfig
-
+import datetime
 
 import logging
-log = logging.getLogger(__name__)
+date_log = 'logging outputs/'+str(datetime.datetime.now().date())+'/'
+logfp = date_log + datetime.datetime.now().strftime('%H: %M') +'/'
+result = re.search('(.*).py', os.path.basename(__file__))
+result = result.group(1)
+os.makedirs(logfp, exist_ok=True)
+logging.basicConfig(filename=logfp+result, encoding='utf-8', level=logging.INFO)
+
 
 def build_model():
     initialize(config_path="config", job_name="model")
     cfg = compose(config_name="model.yaml")
-    log.info(f"configuration: \n {OmegaConf.to_yaml(cfg)}")
+    logging.info(f"configuration: \n {OmegaConf.to_yaml(cfg)}")
     configs = cfg['hyperparameters']
 
     ###################################################
@@ -55,19 +61,19 @@ def train():
     model = build_model()
 
     cfg = compose(config_name="train_conf.yaml")
-    log.info(f"configuration: \n {OmegaConf.to_yaml(cfg)}")
+    logging.info(f"configuration: \n {OmegaConf.to_yaml(cfg)}")
 
     hparams = cfg.hyperparameters
 
     # set seed
     torch.manual_seed(hparams["seed"])
 
-    log.info("Training day and night")
+    logging.info("Training day and night")
     parser = argparse.ArgumentParser(description="Training arguments")
     parser.add_argument("--lr", default=hparams["lr"])
     # add any additional argument that you want
     args = parser.parse_args(sys.argv[1:])
-    log.info(args)
+    logging.info(args)
 
     # TODO: Implement training loop here
     model = MyAwesomeModel()
@@ -102,9 +108,9 @@ def train():
 
             running_loss += loss.item()
 
-        log.info(
-            "Epoch: {}/{}.. ".format(e + 1, epochs),
-            "Training Loss: {:.3f}.. ".format(running_loss / len(train_set)),
+        logging.info(
+            "Epoch: {}/{}.. ".format(e + 1, epochs)+
+            "Training Loss: {:.3f}.. ".format(running_loss / len(train_set))
         )
         train_losses.append(running_loss / len(train_set))
 
@@ -117,7 +123,7 @@ def train():
     plt.ylabel("Loss")
     plt.title("Training loss plot")
     plt.savefig("reports/figures/Training_loss_evolution_config.png", dpi=300)
-    torch.save(model, "models/ConvolutionModel_v1_lr0.003_e30_bs64_config.pth")
+    torch.save(model, "models/ConvolutionModel_config.pth")
 
 
 if __name__ == "__main__":
