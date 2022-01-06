@@ -18,6 +18,7 @@ from hydra import compose, initialize
 from omegaconf import OmegaConf,DictConfig
 import datetime
 
+# Setup logging
 import logging
 date_log = 'logging outputs/'+str(datetime.datetime.now().date())+'/'
 logfp = date_log + datetime.datetime.now().strftime('%H: %M') +'/'
@@ -25,6 +26,11 @@ result = re.search('(.*).py', os.path.basename(__file__))
 result = result.group(1)
 os.makedirs(logfp, exist_ok=True)
 logging.basicConfig(filename=logfp+result, encoding='utf-8', level=logging.INFO)
+
+# wandb
+import wandb
+
+
 
 
 def build_model():
@@ -69,11 +75,10 @@ def train():
     torch.manual_seed(hparams["seed"])
 
     logging.info("Training day and night")
-    parser = argparse.ArgumentParser(description="Training arguments")
-    parser.add_argument("--lr", default=hparams["lr"])
-    # add any additional argument that you want
-    args = parser.parse_args(sys.argv[1:])
-    logging.info(args)
+    
+    
+    # initialize wand
+    wandb.init(config=cfg)
 
     # TODO: Implement training loop here
     model = MyAwesomeModel()
@@ -81,11 +86,24 @@ def train():
     train_set = torch.utils.data.DataLoader(
         train_set, batch_size=hparams["batch_size"], shuffle=True
     )
+    
+    test_set = torch.load(hparams["data_path"] + "/test_processed.pt")
+    test_set = torch.utils.data.DataLoader(
+        test_set, batch_size=hparams['batch_size_valid'], shuffle=True
+    )
+    # Setup model, and watch with wandb
+    wandb.watch(model, log_freq=100)
 
+    
     criterion = nn.NLLLoss()
-    optimizer = optim.Adam(model.parameters(), lr=hparams["lr_optim"])
+    if hparams['optimizer'] == 'sgd':
+        optimizer = optim.SGD(model.paramters(), lr=hparams["lr"])
+    else:
+        optimizer = optim.Adam(model.parameters(), lr=hparams["lr"])
 
     epochs = hparams["epochs"]
+
+    val_images, val_labels = next(iter(test_set))
 
     train_losses, test_losses = [], []
     model.train()
@@ -107,12 +125,22 @@ def train():
             # pdb.set_trace()
 
             running_loss += loss.item()
+            
+            if running_loss/len(train_set) > 0.4:
+                wandb.log({'inputs': wandb.Image(images[0])}) # Wand to extract training images when loss is greater than 0.4 (has no use tbh)
 
         logging.info(
             "Epoch: {}/{}.. ".format(e + 1, epochs)+
             "Training Loss: {:.3f}.. ".format(running_loss / len(train_set))
         )
+            
+        wandb.log({"training_loss": running_loss/len(train_set)})
         train_losses.append(running_loss / len(train_set))
+    
+    log_ps_valid = torch.exp(model(val_images))
+    top_p, top_class = log_ps_valid.topk(1, dim=1)
+    equals = top_class == val_labels.view(*top_class.shape)
+    wandb.log({'validation_accuracy': sum(equals) / len(equals)})
 
     os.makedirs("reports/figures/", exist_ok=True)
     os.makedirs("models/", exist_ok=True)

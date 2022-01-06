@@ -1,0 +1,46 @@
+INFO:root:configuration: 
+ hyperparameters:
+  input_channel: 1
+  conv_to_linear_dim: 144
+  output_dim: 10
+  hidden_channel_array:
+  - 4
+  - 8
+  - 16
+  hidden_kernel_array:
+  - 3
+  - 3
+  - 3
+  hidden_stride_array:
+  - 1
+  - 1
+  - 1
+  hidden_padding_array:
+  - 1
+  - 1
+  - 1
+  hidden_dim_array:
+  - 128
+  - 64
+  non_linear_function_array: []
+  regularization_array: []
+
+INFO:root:configuration: 
+ hyperparameters:
+  batch_size: 64
+  lr: 0.001
+  lr_optim: 0.003
+  epochs: 20
+  seed: 123
+  data_path: /Users/frederikhartmann/Desktop/3. Semester/Januar MLOPS/s2_cookiecutter_exercise/data/processed
+
+INFO:root:Training day and night
+INFO:root:Namespace(lr=0.001)
+INFO:root:Epoch: 1/20.. Training Loss: 0.479.. 
+INFO:root:Epoch: 2/20.. Training Loss: 0.171.. 
+INFO:root:Epoch: 3/20.. Training Loss: 0.137.. 
+INFO:root:Epoch: 4/20.. Training Loss: 0.117.. 
+INFO:root:Epoch: 5/20.. Training Loss: 0.102.. 
+INFO:root:Epoch: 6/20.. Training Loss: 0.098.. 
+INFO:root:Epoch: 7/20.. Training Loss: 0.087.. 
+INFO:root:Epoch: 8/20.. Training Loss: 0.083.. 
