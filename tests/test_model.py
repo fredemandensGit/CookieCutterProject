@@ -11,6 +11,8 @@ sns.set_style("whitegrid")
 
 import numpy as np
 
+import os
+
 # debugging
 import pdb
 
@@ -32,6 +34,8 @@ model.load_state_dict(torch.load("models/trained_model.pt"))
 
 # testing model
 @pytest.mark.parametrize("batch", [20, 30, 50])
+@pytest.mark.skipif(not (os.path.exists("data/processed/train_dataset.pt") or 
+                         os.path.exists("data/processed/test_dataset.pt")), reason="Data files not found")
 def test_input_to_output_dims(batch): # pragma: no cover
     # Load data and set batch size shuffle
     Train = torch.load("data/processed/train_processed.pt")
@@ -47,15 +51,20 @@ def test_input_to_output_dims(batch): # pragma: no cover
     assert log_ps.shape[0] == batch, "Shape of model output does not match batch size"
     assert log_ps.shape[1] == 10, "Shape of model output does not match number of labels"
 
+@pytest.mark.skipif(not (os.path.exists("data/processed/train_dataset.pt") or 
+                         os.path.exists("data/processed/test_dataset.pt")), reason="Data files not found")
 def test_data_shape():
     with pytest.raises(ValueError, match="Expected input to be a 3D tensor"):
         model(torch.randn(1, 64, 28, 28))
-    
+   
+@pytest.mark.skipif(not (os.path.exists("data/processed/train_dataset.pt") or 
+                         os.path.exists("data/processed/test_dataset.pt")), reason="Data files not found")
 def test_image_dim():
     with pytest.raises(ValueError, match=r"Expected each sample to have shape \[28, 28\]"):
         model(torch.randn(1,2,3))
     
 from tests import _PATH_DATA
-
+@pytest.mark.skipif(not (os.path.exists("data/processed/train_dataset.pt") or 
+                         os.path.exists("data/processed/test_dataset.pt")), reason="Data files not found")
 def test_load_data():
     torch.load(f'{_PATH_DATA}/processed/test_processed.pt')
