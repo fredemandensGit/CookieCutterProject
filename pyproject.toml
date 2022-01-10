@@ -40,11 +40,21 @@ build-backend = "setuptools.build_meta"
 extend-ignore = "W503," # W503: Line break occurred before binary operator
 max-line-length = 100
 
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+  #  "integration",
+]
+
 [tool.black]
 line-length = 100
 target_version = ['py39']
 include = '.pyi?$'
 exclude = '''
+
+
 
 (
   /(

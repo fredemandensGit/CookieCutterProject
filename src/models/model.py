@@ -33,6 +33,11 @@ class MyAwesomeModel(nn.Module):
         self.Dropout = nn.Dropout(p=0.2)
 
     def forward(self, x):
+        if x.ndim != 3:
+            raise ValueError("Expected input to be a 3D tensor")
+        if x.shape[1] != 28 or x.shape[2] != 28:
+            raise ValueError("Expected each sample to have shape [28, 28]")
+            
         x = x.view(x.shape[0], 1, x.shape[1], x.shape[2])
 
         x = self.maxpooling(F.leaky_relu(self.cl1(x)))

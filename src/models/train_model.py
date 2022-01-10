@@ -116,7 +116,10 @@ def train():
 
             # zero gradients
             optimizer.zero_grad()
-
+            
+            if sum(model.cl1.weights.grad()) != 0:
+                raise ValueError("Weights not set to zero in training loop!")
+            
             # Compute loss, step and save running loss
             log_ps = model(images)
             loss = criterion(log_ps, labels)
