@@ -25,6 +25,8 @@ Test = torch.load("data/processed/test_processed.pt")
 model = MyAwesomeModel()
 model.load_state_dict(torch.load("models/trained_model.pt"))
 
+#pdb.set_trace()
+
 # testing model
 def test_input_to_output_dims():
-    assert np.shape(model(Train[:][0]))[0] == 10, "Shape of model output does not match desired output dimensions"
+    assert np.shape(model(Train[:][0]))[1] == 10, "Shape of model output does not match desired output dimensions"
