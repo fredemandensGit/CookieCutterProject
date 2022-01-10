@@ -18,8 +18,7 @@ import pdb
 
 # Load data
 from tests import _PATH_DATA
-Train = torch.load("data/processed/train_processed.pt")
-Test = torch.load("data/processed/test_processed.pt")
+
 
 # Number of datapoints in train and test
 N_train = 40000

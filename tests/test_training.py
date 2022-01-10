@@ -22,10 +22,6 @@ from src.models.model import MyAwesomeModel
 # Import path to data
 from tests import _PATH_DATA
 
-# Load data
-Train = torch.load("data/processed/train_processed.pt")
-Test = torch.load("data/processed/test_processed.pt")
-
 # Load model
 model = MyAwesomeModel()
 model.load_state_dict(torch.load("models/trained_model.pt"))
