@@ -22,7 +22,7 @@ import datetime
 # Setup logging
 import logging
 
-date_log = "logging outputs/" + str(datetime.datetime.now().date()) + "/"
+date_log = "loggingoutputs/" + str(datetime.datetime.now().date()) + "/"
 logfp = date_log + datetime.datetime.now().strftime("%H: %M") + "/"
 result = re.search("(.*).py", os.path.basename(__file__))
 result = result.group(1)
