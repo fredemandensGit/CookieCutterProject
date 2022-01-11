@@ -2,18 +2,25 @@ name: "Run tests"
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master, main ]
   pull_request:
-    branches: [ main ]
+    branches: [ master, main ]
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    - name: Cache pip
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-py${{ matrix.python-version }}-td${{ steps.times.outputs.period }}-pip-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements/test.txt') }}
+        restore-keys: ${{ runner.os }}-py${{ matrix.python-version }}-td${{ steps.times.outputs.period }}-pip-
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
@@ -27,10 +34,3 @@ jobs:
       run: |
         pip install pytest
         pytest -v
-
-    - name: Cache pip
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.pip-cache.outputs.dir }}
-        key: ${{ runner.os }}-py${{ matrix.python-version }}-td${{ steps.times.outputs.period }}-pip-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements/test.txt') }}
-        restore-keys: ${{ runner.os }}-py${{ matrix.python-version }}-td${{ steps.times.outputs.period }}-pip-
